@@ -6,6 +6,8 @@ ROSE — концепт премиального клуба знакомств �
 
 **Сайт с прототипом:** https://sergey-cv.com/rose-club/
 
+**Домен проекта:** rosedate.ru (подключается после регистрации домена)
+
 **Презентация:** https://sergey-cv.com/rose-club/docs/ROSE_presentation.pdf
 
 ---
