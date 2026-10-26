@@ -34,7 +34,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:1px solid var(--rose);outl
 .phone{width:414px;height:868px;border-radius:64px;padding:12px;background:#0A0A0A;box-shadow:0 0 0 1.5px #1C1C1E,0 0 0 3px #050505,0 40px 120px rgba(227,18,47,.10),0 30px 80px rgba(0,0,0,.9);position:relative;transform-origin:top center}
 .phone::before{content:"";position:absolute;inset:4px;border-radius:60px;border:1px solid #161616;pointer-events:none}
 .btn-side{position:absolute;width:3px;background:#111;border-radius:2px}
-.screen{width:390px;height:844px;border-radius:52px;overflow:hidden;position:relative;background:var(--noir);isolation:isolate}
+.screen{width:390px;height:844px;border-radius:52px;overflow:hidden;overflow:clip;position:relative;background:var(--noir);isolation:isolate}
 .island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:122px;height:35px;border-radius:20px;background:#000;z-index:60}
 .status{position:absolute;top:0;left:0;right:0;height:54px;display:flex;justify-content:space-between;align-items:center;padding:6px 34px 0 40px;font-size:15px;font-weight:600;z-index:55;pointer-events:none;letter-spacing:.01em}
 .status .icons{display:flex;gap:6px;align-items:center}
@@ -129,8 +129,8 @@ button:focus-visible,[tabindex]:focus-visible{outline:1px solid var(--rose);outl
 .flip.on .flip-in{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;border-radius:30px;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:28px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid var(--line)}
 .face.front{background:radial-gradient(circle at 50% 40%,#2A0A10,#0A0909 70%);align-items:center;justify-content:center;text-align:center;gap:18px}
-.face.back{transform:rotateY(180deg);background:var(--bone);color:#0B0A0A}
-.face.back .eyebrow{color:#7a726c}
+.face.bk{transform:rotateY(180deg);background:var(--bone);color:#0B0A0A}
+.face.bk .eyebrow{color:#7a726c}
 
 .card.poster{padding:0;justify-content:flex-end;background:#000}
 .card .stamp{z-index:3}
@@ -202,8 +202,8 @@ button:focus-visible,[tabindex]:focus-visible{outline:1px solid var(--rose);outl
 .diagram{display:flex;justify-content:center;margin-bottom:10px}
 .sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:65;opacity:0;pointer-events:none;transition:opacity .3s}
 .sheet-bg.show{opacity:1;pointer-events:auto}
-.sheet{position:absolute;left:0;right:0;bottom:0;z-index:66;background:#0F0E0E;border-top:1px solid var(--line);border-radius:30px 30px 0 0;padding:14px 24px 38px;transform:translateY(102%);transition:transform .4s cubic-bezier(.2,.7,.2,1)}
-.sheet.show{transform:none}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:66;background:#0F0E0E;border-top:1px solid var(--line);border-radius:30px 30px 0 0;padding:14px 24px 38px;transform:translateY(102%);visibility:hidden;transition:transform .4s cubic-bezier(.2,.7,.2,1),visibility 0s linear .4s}
+.sheet.show{transform:none;visibility:visible;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
 .sheet .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 18px}
 .rating{display:flex;flex-direction:column;gap:8px}
 .rate{display:flex;gap:14px;align-items:center;text-align:left;padding:14px 16px;border-radius:18px;border:1px solid var(--line)}
@@ -584,7 +584,7 @@ V.live=()=>{
     <div class="chips" style="margin-top:14px">${DECKS.map((x,k)=>`<button class="chip ${k===S.gameDeck?'on':''}" data-deck="${k}">${x.name}</button>`).join('')}</div>
     <div class="flip ${S.flipped?'on':''}" id="flip" role="button" tabindex="0" aria-label="Перевернуть карту"><div class="flip-in">
       <div class="face front"><img src="${ROSE}" alt="" style="width:54px"><div class="word" style="font-size:16px">ROSE</div><div class="small">Нажмите, чтобы открыть вопрос</div></div>
-      <div class="face back"><div class="row"><span class="eyebrow">${d.name}</span><span class="eyebrow num">${(S.gameCard%d.cards.length)+1} / ${d.cards.length}</span></div><div style="font-family:var(--display);font-size:36px;line-height:1.08;font-weight:500">${c}</div><div class="small" style="color:#6b635d">Ответьте по кругу. Можно пропустить.</div></div>
+      <div class="face bk"><div class="row"><span class="eyebrow">${d.name}</span><span class="eyebrow num">${(S.gameCard%d.cards.length)+1} / ${d.cards.length}</span></div><div style="font-family:var(--display);font-size:36px;line-height:1.08;font-weight:500">${c}</div><div class="small" style="color:#6b635d">Ответьте по кругу. Можно пропустить.</div></div>
     </div></div>
     <button class="btn btn-ghost" style="margin-top:14px" data-act="nextcard">Следующая карта</button>
   </div>
@@ -800,7 +800,7 @@ const ACT={
 };
 
 /* fit phone to viewport on desktop */
-function fit(){const p=$('#phone');if(innerWidth<=480){p.style.transform='';p.parentNode.style.height='';return}const sc=Math.min(1,(innerHeight-48)/868);p.style.transform=`scale(${sc})`;p.parentNode.style.height=(868*sc)+'px';p.parentNode.style.width=(414*sc)+'px'}
+function fit(){const p=$('#phone');if(innerWidth<=480){p.style.transform='';p.parentNode.style.height='';p.parentNode.style.width='';return}const sc=Math.min(1,(innerHeight-48)/868);p.style.transform=`scale(${sc})`;p.parentNode.style.height=(868*sc)+'px';p.parentNode.style.width=(414*sc)+'px'}
 addEventListener('resize',fit);fit();
 render();
 })();
